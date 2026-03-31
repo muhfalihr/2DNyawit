@@ -4,98 +4,86 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
 public class KeyHandler implements KeyListener {
-    
-    GamePanel gp;
-    public boolean upPressed, downPressed, leftPressed, rightPressed, enterPressed;
-
-    // DEBUG
-    boolean showDebugText = false;
+    final private GamePanel gp;
+    private boolean upPressed, downPressed, leftPressed, rightPressed, enterPressed;
+    private boolean showDebugText = false;
 
     public KeyHandler(GamePanel gp) {
         this.gp = gp;
     }
 
-    @Override
-    public void keyTyped(KeyEvent e) {}
+    public boolean getUpPressed() {
+        return this.upPressed;
+    }
+
+    public boolean getDownPressed() {
+        return this.downPressed;
+    }
+
+    public boolean getLeftPressed() {
+        return this.leftPressed;
+    }
+
+    public boolean getRightPressed() {
+        return this.rightPressed;
+    }
+
+    public boolean getEnterPressed() {
+        return this.enterPressed;
+    }
+
+    public boolean getShowDebugText() {
+        return this.showDebugText;
+    }
 
     @Override
     public void keyPressed(KeyEvent e) {
         int code = e.getKeyCode();
-
-        // TITLE STATE
-        if(gp.gameState == gp.titleState) {
-            // titleState(code);
-        }
-        // PLAY STATE
-        else if(gp.gameState == gp.playState) {
-            // playState(code);
-        }
-        // PUASE STATE
-        else if(gp.gameState == gp.pauseState) {
-            // pauseState(code);
-        }
-        // DIALOGUE STATE
-        else if(gp.gameState == gp.dialogueState) {
-            // dialogueState(code);
-        }
-        // CHARACTER STATE
-        else if(gp.gameState == gp.characterState) {
-            // chatacterState(code);
-        }
-    }
-
-    public void titleState(int code) {
-        // 
-    }
-
-    public void playState(int code) {
+        
         if(code == KeyEvent.VK_W) {
-            upPressed = true;
+            this.upPressed = true;
         }
         if(code == KeyEvent.VK_S) {
-            downPressed = true;
+            this.downPressed = true;
         }
         if(code == KeyEvent.VK_A) {
-            leftPressed = true;
+            this.leftPressed = true;
         }
         if(code == KeyEvent.VK_D) {
-            rightPressed = true;
+            this.rightPressed = true;
         }
-        if(code == KeyEvent.VK_P) {
-            gp.gameState = gp.pauseState;
-        }
-        if(code == KeyEvent.VK_C) {
-            gp.gameState = gp.characterState;
-        }
-        if(code == KeyEvent.VK_ENTER) {
-            enterPressed = true;
-        }
-        // if(code == KeyEvent.VK_F) {
-        //     shotKeyPressed = true;
-        // }
-
-        // DEBUG
         if(code == KeyEvent.VK_T) {
-            if (showDebugText == false) {
-                showDebugText = true;
-            } else if (showDebugText == true) {
-                showDebugText = false;
+            if(this.showDebugText == false) {
+                this.showDebugText = true;
+            } else if(this.showDebugText == true) {
+                this.showDebugText = false;
             }
         }
         if(code==KeyEvent.VK_R) {
-            gp.tileM.loadMap();
+            this.gp.loadMap();
         }
     }
 
-    public void pauseState(int code) {
-        if(code==KeyEvent.VK_P) {
-            gp.gameState = gp.playState;
+    @Override
+    public void keyReleased(KeyEvent e) {
+        int code = e.getKeyCode();
+        
+        if(code == KeyEvent.VK_W) {
+            this.upPressed = false;
+        }
+        if(code == KeyEvent.VK_S) {
+            this.downPressed = false;
+        }
+        if(code == KeyEvent.VK_A) {
+            this.leftPressed = false;
+        }
+        if(code == KeyEvent.VK_D) {
+            this.rightPressed = false;
         }
     }
 
-    public void dialogueState(int code) {
-        if(code==KeyEvent.VK_ENTER) {
-            gp.gameState = gp.playState;
-        }
+    @Override
+    public void keyTyped(KeyEvent e) {
     }
+    
 }

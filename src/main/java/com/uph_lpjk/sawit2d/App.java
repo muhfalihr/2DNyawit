@@ -2,6 +2,8 @@ package com.uph_lpjk.sawit2d;
 
 import javax.swing.JFrame;
 
+import com.uph_lpjk.sawit2d.controller.GamePanel;
+
 public class App 
 {
     public static void main( String[] args ) {
@@ -10,6 +12,14 @@ public class App
         window.setResizable(false);
         window.setTitle("2D Nyawit");
 
-        
+        GamePanel gamePanel = new GamePanel();
+        window.add(gamePanel);
+
+        window.pack();
+
+        window.setLocationRelativeTo(null);
+        window.setVisible(true);
+
+        gamePanel.startGameThread();
     }
 }

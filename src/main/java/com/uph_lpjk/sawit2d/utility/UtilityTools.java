@@ -1,4 +1,4 @@
-package com.uph_lpjk.sawit2d.controller;
+package com.uph_lpjk.sawit2d.utility;
 
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
