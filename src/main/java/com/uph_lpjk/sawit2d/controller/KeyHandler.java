@@ -39,28 +39,11 @@ public class KeyHandler implements KeyListener {
     @Override
     public void keyPressed(KeyEvent e) {
         int code = e.getKeyCode();
-        
-        if(code == KeyEvent.VK_W) {
-            this.upPressed = true;
-        }
-        if(code == KeyEvent.VK_S) {
-            this.downPressed = true;
-        }
-        if(code == KeyEvent.VK_A) {
-            this.leftPressed = true;
-        }
-        if(code == KeyEvent.VK_D) {
-            this.rightPressed = true;
-        }
-        if(code == KeyEvent.VK_T) {
-            if(this.showDebugText == false) {
-                this.showDebugText = true;
-            } else if(this.showDebugText == true) {
-                this.showDebugText = false;
-            }
-        }
-        if(code==KeyEvent.VK_R) {
-            this.gp.loadMap();
+
+        switch (this.gp.getGameState()) {
+            case TITLE: titleState(code); break;
+            case PLAY: playState(code); break;
+            case PAUSE: pauseState(code); break;
         }
     }
 
@@ -83,7 +66,56 @@ public class KeyHandler implements KeyListener {
     }
 
     @Override
-    public void keyTyped(KeyEvent e) {
+    public void keyTyped(KeyEvent e) {}
+
+    private void titleState(int code) {
+
+    }
+
+    private void playState(int code) {
+        if(code == KeyEvent.VK_W) {
+            this.upPressed = true;
+        }
+        if(code == KeyEvent.VK_S) {
+            this.downPressed = true;
+        }
+        if(code == KeyEvent.VK_A) {
+            this.leftPressed = true;
+        }
+        if(code == KeyEvent.VK_D) {
+            this.rightPressed = true;
+        }
+        if(code == KeyEvent.VK_R) {
+            this.gp.loadMap();
+        }
+        if(code == KeyEvent.VK_P) {
+            this.gp.setGameState(GamePanel.State.PAUSE);
+        }
+        if(code == KeyEvent.VK_T) {
+            if(this.showDebugText == false) {
+                this.showDebugText = true;
+            } else if(this.showDebugText == true) {
+                this.showDebugText = false;
+            }
+        }
+    }
+
+    private void pauseState(int code) {
+        if(code == KeyEvent.VK_P) {
+            this.gp.setGameState(GamePanel.State.PLAY);
+        }
+    }
+
+    private void dialogueState(int code) {
+
+    }
+
+    private void characterState(int code) {
+
+    }
+
+    private void optionState(int code) {
+
     }
     
 }

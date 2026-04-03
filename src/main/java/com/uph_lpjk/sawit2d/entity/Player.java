@@ -38,7 +38,7 @@ public class Player extends Entity {
         solidArea.height = 32;
 
         setDefaultValues();
-        getImage();
+        getPlayerImage();
     }
 
     public int getScreenX() {
@@ -49,10 +49,12 @@ public class Player extends Entity {
         return this.screenY;
     }
 
+    @Override
     public int getSolidAreaX() {
         return this.solidArea.x;
     }
 
+    @Override
     public int getSolidAreaY() {
         return this.solidArea.y;
     }
@@ -60,10 +62,10 @@ public class Player extends Entity {
     private void setDefaultValues() {
         setWorldX(this.tileSize * 46);
         setWorldY(this.tileSize * 18);
-        setSpeed(4);
+        setSpeed(3);
     }
 
-    private void getImage() {
+    private void getPlayerImage() {
         up1 = setup("/player/walking/boy_up_1", this.tileSize, this.tileSize);
         up2 = setup("/player/walking/boy_up_2", this.tileSize, this.tileSize);
         down1 = setup("/player/walking/boy_down_1", this.tileSize, this.tileSize);
@@ -96,6 +98,10 @@ public class Player extends Entity {
             setCollisionOn(false);
             this.gp.checkTile(this);
 
+            // CHECK OBJECT COLLISION
+            int objectIndex = this.gp.getCheckObject(this, true);
+            pickUpObject(objectIndex);
+
             // IF COLLISION IS FALSE, PLAYER CAN MOVE
             if(getCollisionOn() == false && this.keyH.getEnterPressed() == false) {
                 switch (getDirection()) {
@@ -122,23 +128,8 @@ public class Player extends Entity {
 
     public void draw(Graphics2D g2) {
         BufferedImage image = null;
-        int tempScreenX = screenX;
-        int tempScreenY = screenY;
-
-        if (screenX > worldX) {
-            tempScreenX = worldX;
-        }
-        if (screenY > worldY) {
-            tempScreenY = worldY;
-        }
-        int rightOffset = gp.getScreenWidth() - screenX;
-        if (rightOffset > gp.getWorldWidth() - worldX) {
-            tempScreenX = gp.getScreenWidth() - (gp.getWorldWidth() - worldX);
-        }
-        int bottomOffset = gp.getScreenHeight() - screenY;
-        if (bottomOffset > gp.getWorldHeight() - worldY) {
-            tempScreenY = gp.getScreenHeight() - (gp.getWorldHeight() - worldY);
-        }
+        int tempScreenX = worldX - gp.getCameraX();
+        int tempScreenY = worldY - gp.getCameraY();
 
         switch (getDirection()) {
             case "up":
@@ -185,6 +176,18 @@ public class Player extends Entity {
                 break;
         }
         g2.drawImage(image, tempScreenX, tempScreenY, null);
+    }
+
+    public void pickUpObject(int i) {
+        if(i != 999) {
+            // PICKUP ONLY TIMES
+            if(this.gp.getObjectType(i) == type_pickupOnly) {
+                this.gp.setObjectUse(i, this);
+                this.gp.setObject(i, null);
+            } else {
+                // INVENTORY ITEMS
+            }
+        }
     }
 
 }

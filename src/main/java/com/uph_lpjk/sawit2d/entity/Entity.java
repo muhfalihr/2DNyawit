@@ -1,5 +1,6 @@
 package com.uph_lpjk.sawit2d.entity;
 
+import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -35,10 +36,12 @@ public class Entity {
 
     // ATTRIBUTES OBJECT / CHARACTER
     private String name;
+    private int gold;
 
     // ITEM ATTRIBUTES
     private String description;
     private int attackValue;
+    private int value;
 
     // TYPE
     private int type; // 0 = player, 1 = npc
@@ -48,10 +51,15 @@ public class Entity {
     final public int type_axe = 3;
     final public int type_consumable = 4;
     final public int type_pickupOnly = 5;
-
+    
     public Entity(GamePanel gp) {
         this.gp = gp;
     }
+    
+    public void use(Entity entity) {}
+    public BufferedImage getImage() { return this.image; }
+    public BufferedImage getImage2() { return this.image2; }
+    public BufferedImage getImage3() { return this.image3; }
 
     public int getTileSize() {
         return this.gp.getTileSize();
@@ -81,12 +89,24 @@ public class Entity {
         this.worldY = worldY;
     }
 
+    public Rectangle getSolidArea() {
+        return this.solidArea;
+    }
+
     public int getSolidAreaX() {
         return this.solidArea.x;
     }
 
+    public void setSolidAreaX(int x) {
+        this.solidArea.x = x;
+    }
+
     public int getSolidAreaY() {
         return this.solidArea.y;
+    }
+
+    public void setSolidAreaY(int y) {
+        this.solidArea.y = y;
     }
 
     public int getSolidAreaWidth() {
@@ -95,6 +115,14 @@ public class Entity {
 
     public int getSolidAreaHeight() {
         return this.solidArea.height;
+    }
+
+    public int getSolidAreaDefaultX() {
+        return this.solidAreaDefaultX;
+    }
+
+    public int getSolidAreaDefaultY() {
+        return this.solidAreaDefaultY;
     }
 
     public int getSpeed() {
@@ -121,6 +149,15 @@ public class Entity {
         this.collisionOn = collision;
     }
 
+    public boolean isCollision() {
+        return this.collision;
+    }
+
+    public void setCollision(boolean collision) {
+        this.collision = collision;
+    }
+
+
     // OBJECT ATTRIBUTE
     public void setName(String name) {
         this.name = name;
@@ -130,7 +167,19 @@ public class Entity {
         return this.name;
     }
 
+    public void setGold(int gold) {
+        this.gold += gold;
+    }
+
+    public int getGold() {
+        return this.gold;
+    }
+
     // TYPE
+    public int getType() {
+        return this.type;
+    }
+
     public void setType(int type) {
         this.type = type;
     }
@@ -150,6 +199,14 @@ public class Entity {
 
     public int getAttackValue() {
         return this.attackValue;
+    }
+
+    public void setValue(int value) {
+        this.value = value;
+    }
+
+    public int getValue() {
+        return this.value;
     }
 
     public BufferedImage setup(String imagePath, int width, int height) {
@@ -172,5 +229,43 @@ public class Entity {
             e.printStackTrace();
         }
         return image;
+    }
+
+    public void draw(Graphics2D g2) {
+        BufferedImage image = null;
+        int screenX = worldX - this.gp.getCameraX();
+        int screenY = worldY - this.gp.getCameraY();
+
+        if(
+            worldX + this.gp.getTileSize() > this.gp.getCameraX() &&
+            worldX - this.gp.getTileSize() < this.gp.getCameraX() + this.gp.getScreenWidth() &&
+            worldY + this.gp.getTileSize() > this.gp.getCameraY() &&
+            worldY - this.gp.getTileSize() < this.gp.getCameraY() + this.gp.getScreenHeight() 
+        ) {
+            switch (getDirection()) {
+                case "up":
+                    if(this.spriteNum == 1) image = this.up1;
+                    if (this.spriteNum == 2) image = this.up2;
+                    break;
+                case "down":
+                    if(this.spriteNum == 1) image = this.down1;
+                    if(this.spriteNum == 2) image = this.down2;
+                    break;
+                case "left":
+                    if(this.spriteNum == 1) image = this.left1;
+                    if(this.spriteNum == 2) image = this.left2;
+                    break;
+                case "right":
+                    if(this.spriteNum == 1) image = this.right1;
+                    if(this.spriteNum == 2) image = this.right2;
+                    break;
+            }
+
+            if(image == null) {
+                image = this.down1;
+            }
+
+            g2.drawImage(image, screenX, screenY, null);
+        }
     }
 }

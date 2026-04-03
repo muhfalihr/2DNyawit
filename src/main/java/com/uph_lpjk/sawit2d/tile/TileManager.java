@@ -140,14 +140,10 @@ public class TileManager {
         int worldCol = 0;
         int worldRow = 0;
 
-        int cameraX = gp.getPlayerWorldX() - gp.getPlayerScreenX();
-        int cameraY = gp.getPlayerWorldY() - gp.getPlayerScreenY();
-
-        // CAMERA BOUNDS
-        if (cameraX < 0) cameraX = 0;
-        if (cameraY < 0) cameraY = 0;
-        if (cameraX > gp.getWorldWidth() - gp.getScreenWidth()) cameraX = gp.getWorldWidth() - gp.getScreenWidth();
-        if (cameraY > gp.getWorldHeight() - gp.getScreenHeight()) cameraY = gp.getWorldHeight() - gp.getScreenHeight();
+        int cameraX = gp.getCameraX();
+        int cameraY = gp.getCameraY();
+        int screenWidth = gp.getScreenWidth();
+        int screenHeight = gp.getScreenHeight();
 
         while(worldCol < this.maxWorldCol && worldRow < this.maxWorldRow) {
             int tileNum = this.mapTileNum[worldCol][worldRow];
@@ -160,9 +156,9 @@ public class TileManager {
 
             if(
                 worldX + this.tileSize > cameraX &&
-                worldX - this.tileSize < cameraX + gp.getScreenWidth() &&
+                worldX - this.tileSize < cameraX + screenWidth &&
                 worldY + this.tileSize > cameraY &&
-                worldY - this.tileSize < cameraY + gp.getScreenHeight()
+                worldY - this.tileSize < cameraY + screenHeight
             ) {
                 g2.drawImage(this.tile[tileNum].image, screenX, screenY, null);
             }

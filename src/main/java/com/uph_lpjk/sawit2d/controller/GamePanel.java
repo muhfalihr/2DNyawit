@@ -5,7 +5,11 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 import javax.swing.JPanel;
 
@@ -44,13 +48,23 @@ public class GamePanel extends JPanel implements Runnable {
 
     // INIT CONTROLLER
     final private KeyHandler keyH = new KeyHandler(this);
+    final private AssetSetter aSetter = new AssetSetter(this);
+    final private UserInterface ui = new UserInterface(this);
+    final private Sound music = new Sound();
+    final private Sound soundEffect = new Sound();
 
     // ENTITY AND OBJECT
     final private Player player = new Player(this, keyH);
     final private Entity obj[] = new Entity[20];
     
+    final private ArrayList<Entity> entityList = new ArrayList<>();
+    
     final private CollisionChecker cChecker = new CollisionChecker(this);
     final private TileManager tileM = new TileManager(this);
+
+    // GAME STATE
+    public enum State { TITLE, PLAY, PAUSE }
+    private State gameState;
 
 
     public GamePanel() {
@@ -93,6 +107,27 @@ public class GamePanel extends JPanel implements Runnable {
         return this.worldHeight;
     }
 
+    // MUSIC AND SOUND EFFECT
+    public void playMusic(int i) {
+        this.music.setFile(i);
+        this.music.play();
+        this.music.loop();
+    }
+
+    public void stopMusic() {
+        this.music.stop();
+    }
+
+    public void playSoundEffect(int i) {
+        this.soundEffect.setFile(i);
+        this.soundEffect.play();
+    }
+
+    // USER INTERFACE
+    public void addUIMessage(String text) {
+        this.ui.addMessage(text);
+    }
+
     // PLAYER
 
     public int getPlayerWorldX() {
@@ -111,6 +146,14 @@ public class GamePanel extends JPanel implements Runnable {
         return this.player.getScreenY();
     }
 
+    public int getPlayerGold() {
+        return this.player.getGold();
+    }
+
+    public void setPlayerGold(int gold) {
+        this.player.setGold(gold);
+    }
+
     // TILE MANAGER
 
     public void loadMap() {
@@ -125,10 +168,108 @@ public class GamePanel extends JPanel implements Runnable {
         return this.tileM.getTileCollision(i);
     }
 
+    // ENTITY OBJECT
+    public int getObjectLength() {
+        return this.obj.length;
+    }
+
+    public Entity getObject(int i) {
+        return this.obj[i];
+    }
+    
+    public void setObject(int i, Entity entity) {
+        this.obj[i] = entity;
+    }
+
+    public void setObject(int i, Entity object, int worldX, int worldY) {
+        this.obj[i] = object;
+        this.obj[i].setWorldX(worldX);
+        this.obj[i].setWorldY(worldY);
+    }
+
+    public int getObjectType(int i) {
+        return this.obj[i].getType();
+    }
+
+    public void setObjectUse(int i, Entity entity) {
+        this.obj[i].use(entity);
+    }
+
+    public int getObjectWorldX(int i) {
+        return this.obj[i].getWorldX();
+    }
+
+    public int getObjectWorldY(int i) {
+        return this.obj[i].getWorldY();
+    }
+
+    public Rectangle getObjectSolidArea(int i) {
+        return this.obj[i].getSolidArea();
+    }
+
+    public int getObjectSolidAreaX(int i) {
+        return this.obj[i].getSolidAreaX();
+    }
+
+    public void setObjectSolidAreaX(int i, int x) {
+        this.obj[i].setSolidAreaX(x);
+    }
+
+    public int getObjectSolidAreaY(int i) {
+        return this.obj[i].getSolidAreaY();
+    }
+
+    public void setObjectSolidAreaY(int i, int y) {
+        this.obj[i].setSolidAreaY(y);
+    }
+
+    public int getObjectSolidAreaDefaultX(int i) {
+        return this.obj[i].getSolidAreaDefaultX();
+    }
+
+    public int getObjectSolidAreaDefaultY(int i) {
+        return this.obj[i].getSolidAreaDefaultY();
+    }
+
     // COLLISION CHCEKER
+    public int getCheckObject(Entity entity, boolean player) {
+        return this.cChecker.checkObject(entity, player);
+    }
 
     public void checkTile(Entity entity) {
         this.cChecker.checkTile(entity);
+    }
+
+    // GAME STATE
+    public void setGameState(State state) {
+        this.gameState = state;
+    }
+
+    public State getGameState() {
+        return this.gameState;
+    }
+
+
+    public int getCameraX() {
+        int cameraX = player.getWorldX() - player.getScreenX();
+        if (cameraX < 0) cameraX = 0;
+        if (cameraX > getWorldWidth() - getScreenWidth()) cameraX = getWorldWidth() - getScreenWidth();
+        return cameraX;
+    }
+
+    public int getCameraY() {
+        int cameraY = player.getWorldY() - player.getScreenY();
+        if (cameraY < 0) cameraY = 0;
+        if (cameraY > getWorldHeight() - getScreenHeight()) cameraY = getWorldHeight() - getScreenHeight();
+        return cameraY;
+    }
+
+    public void setupGame() {
+        this.aSetter.setObject();
+        this.gameState = GamePanel.State.PLAY;
+
+        tempScreen = new BufferedImage(screenWidth, screenHeight, BufferedImage.TYPE_INT_ARGB);
+        g2 = (Graphics2D)tempScreen.getGraphics();
     }
 
     public void startGameThread() {
@@ -152,7 +293,8 @@ public class GamePanel extends JPanel implements Runnable {
 
             if(delta >= 1) {
                 update();
-                repaint();
+                drawToTempScreen();
+                drawToScreen();
                 delta--;
             }
 
@@ -163,38 +305,62 @@ public class GamePanel extends JPanel implements Runnable {
     }
 
     public void update() {
-        player.update();
+        if(this.gameState == GamePanel.State.PLAY) {
+            // PLAYER
+            player.update();
+        }
+        if(this.gameState == GamePanel.State.PAUSE) {
+            // NOTHING
+        }
+    }
+
+    public void drawToTempScreen() {
+        // TILE
+        tileM.draw(g2);
+
+        // ADD ENTITY TO THE LIST
+        this.entityList.add(this.player);
+
+        for(int i = 0; i < this.obj.length; i++) {
+            if(this.obj[i] != null) {
+                this.entityList.add(this.obj[i]);
+            }
+        }
+
+        // SORT
+        Collections.sort(entityList, new Comparator<Entity>() {
+            @Override
+            public int compare(Entity e1, Entity e2) {
+                int result = Integer.compare(e1.getWorldY(), e2.getWorldY());
+                return result;
+            }
+        });
+
+        // DRAW ENTITY LIST
+        for(int i = 0; i < this.entityList.size(); i++) {
+            this.entityList.get(i).draw(g2);
+        }
+
+        this.ui.draw(g2);
+
+        // EMPTY ENTITY LIST
+        this.entityList.clear();
+    }
+
+    public void drawToScreen() {
+        Graphics g = getGraphics();
+        if (g != null) {
+            g.drawImage(tempScreen, 0, 0, screenWidth2, screenHeight2, null);
+            g.dispose();
+        }
     }
 
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
-
-        // DEBUG
-        long drawStart = 0;
-
-        Graphics2D g2 = (Graphics2D)g;
-        tileM.draw(g2);
-        player.draw(g2);
-
-        // DEBUG
-        if(this.keyH.getShowDebugText() == true) {
-            long drawEnd = System.nanoTime();
-            long passed = drawEnd - drawStart;
-
-            g2.setFont(new Font("Arial", Font.PLAIN, 20));
-            g2.setColor(Color.white);
-            int x = 10;
-            int y = 400;
-            int lineHeight = 20;
-
-            g2.drawString("WorldX: " + this.player.getWorldX(), x, y); y+=lineHeight;
-            g2.drawString("WorldY: " + this.player.getWorldY(), x, y); y+=lineHeight;
-            g2.drawString("Col: " + (this.player.getWorldX() + this.player.getSolidAreaX())/tileSize, x, y); y+=lineHeight;
-            g2.drawString("Row: " + (this.player.getWorldY() + this.player.getSolidAreaY())/tileSize, x, y); y+=lineHeight;
-            g2.drawString("Draw Time: " + passed, x, y);; y+=lineHeight;
+        if (tempScreen != null) {
+            g.drawImage(tempScreen, 0, 0, screenWidth2, screenHeight2, null);
         }
-        g2.dispose();
     }
 
 }
