@@ -1,16 +1,5 @@
 package com.uph_lpjk.sawit2d.farm;
 
-import com.uph_lpjk.sawit2d.controller.GamePanel;
-import com.uph_lpjk.sawit2d.utility.AssetLoader;
-
-import javax.swing.BorderFactory;
-import javax.swing.JButton;
-import javax.swing.JDialog;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JTextArea;
-import javax.swing.SwingUtilities;
-import javax.swing.WindowConstants;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dialog;
@@ -20,9 +9,21 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.Window;
-import java.awt.image.BufferedImage;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
 import java.util.concurrent.atomic.AtomicInteger;
+
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTextArea;
+import javax.swing.SwingUtilities;
+import javax.swing.WindowConstants;
+
+import com.uph_lpjk.sawit2d.controller.GamePanel;
+import com.uph_lpjk.sawit2d.utility.AssetLoader;
 
 public class FirefighterEventSystem {
     private static final int FIREFIGHTER_COST = 30;
@@ -34,7 +35,7 @@ public class FirefighterEventSystem {
 
         if (option == 0) {
             if (gp.getPlayerGold() < FIREFIGHTER_COST) {
-                return new FirefighterResponse("Tim gajah pemadam batal berangkat. Gold tidak cukup.",
+                return new FirefighterResponse("Tim gajah pemadam batal berangkat. Gold tidak cukup. Nyaawit bisa nangani bencana gabisa, dasar miskin",
                         FarmBurnHandledType.NONE);
             }
             gp.setPlayerGold(-FIREFIGHTER_COST);

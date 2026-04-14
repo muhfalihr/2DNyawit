@@ -289,13 +289,16 @@ public class UserInterface {
         this.g2.drawString(title, x, y);
 
         this.g2.setFont(this.g2.getFont().deriveFont(Font.BOLD, 26F));
+        String reason = this.gp.getFarmState().getLastNotification();
         String subtitle = "Tanah Anda Disita Negara";
+        if (reason != null && reason.toLowerCase().contains("gold habis")) {
+            subtitle = "Gold Anda Habis Dasar Miskin Gausah so soan nyawit deh lu";
+        }
         int subtitleX = getXforCenteredText(subtitle);
         this.g2.setColor(new Color(255, 210, 120));
         this.g2.drawString(subtitle, subtitleX, y + 42);
 
         this.g2.setFont(this.g2.getFont().deriveFont(Font.PLAIN, 22F));
-        String reason = this.gp.getFarmState().getLastNotification();
         this.g2.setColor(Color.white);
         drawWrappedText(reason, this.gp.getScreenWidth() / 2, y + 86, this.gp.getScreenWidth() - 220, 28, true);
 
@@ -405,7 +408,7 @@ public class UserInterface {
         int boxX = this.gp.getTileSize() / 2;
         int boxY = this.gp.getTileSize() / 2;
         int boxW = this.gp.getTileSize() * 6;
-        int boxH = this.gp.getTileSize() * 6;
+        int boxH = this.gp.getTileSize() * 7;
 
         this.g2.setColor(new Color(0, 0, 0, 140));
         this.g2.fillRoundRect(boxX, boxY, boxW, boxH, 16, 16);
@@ -423,8 +426,9 @@ public class UserInterface {
         this.g2.drawString("Inventory: " + this.gp.getFarmState().getInventory(), textX, textY + lineHeight * 2);
         this.g2.drawString("Risk: " + this.gp.getFarmState().getRiskScore(), textX, textY + lineHeight * 3);
         this.g2.drawString("Rep: " + this.gp.getFarmState().getReputation(), textX, textY + lineHeight * 4);
-        this.g2.drawString("Auto Tanam: " + (this.gp.getFarmSystem().isAutoPlantEnabled() ? "ON" : "OFF"), textX, textY + lineHeight * 5);
-        this.g2.drawString("Auto Panen: " + (this.gp.getFarmSystem().isAutoHarvestEnabled() ? "ON" : "OFF"), textX, textY + lineHeight * 6);
+        this.g2.drawString("Tanpa tanam: " + this.gp.getFarmSystem().getDaysWithoutPlanting() + " hari", textX, textY + lineHeight * 5);
+        this.g2.drawString("Auto Tanam: " + (this.gp.getFarmSystem().isAutoPlantEnabled() ? "ON" : "OFF"), textX, textY + lineHeight * 6);
+        this.g2.drawString("Auto Panen: " + (this.gp.getFarmSystem().isAutoHarvestEnabled() ? "ON" : "OFF"), textX, textY + lineHeight * 7);
     }
 
     private void drawControlHint() {
