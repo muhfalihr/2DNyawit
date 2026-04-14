@@ -629,7 +629,8 @@ public class FarmSystem {
             return new Color(125, 94, 55, 100);
         }
         if (tile.isBurned()) {
-            return tile.isBurnedHandled() ? new Color(90, 180, 220, 200) : new Color(160, 40, 40, 210);
+            // return tile.isBurnedHandled() ? new Color(90, 180, 220, 200) : new Color(160, 40, 40, 210);
+            return tile.isBurnedHandled() ? new Color(90, 150, 130, 200) : new Color(190, 90, 40, 220);
         }
         if (tile.getType() == FarmTileType.FIREBREAK) {
             return new Color(120, 120, 120, 210);
