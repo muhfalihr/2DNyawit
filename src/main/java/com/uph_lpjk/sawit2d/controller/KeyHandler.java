@@ -289,8 +289,8 @@ public class KeyHandler implements KeyListener {
         int playerCol = gp.getPlayer().getWorldX() / gp.getTileSize();
         int playerRow = gp.getPlayer().getWorldY() / gp.getTileSize();
 
-        // Market is at (45, 3). Check if player is within 4 tiles radius.
-        int marketX = 45;
+        // Market is at (10, 3). Check if player is within 4 tiles radius.
+        int marketX = 10;
         int marketY = 3;
 
         return Math.abs(playerCol - marketX) <= 4 && Math.abs(playerRow - marketY) <= 4;

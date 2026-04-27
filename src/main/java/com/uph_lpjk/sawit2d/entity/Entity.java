@@ -70,6 +70,7 @@ public class Entity {
         CONSUMABLE,
         PICKUP_ONLY,
         HOME,
+        MARKET,
         EQUIPMENT,
         MATERIAL
     }

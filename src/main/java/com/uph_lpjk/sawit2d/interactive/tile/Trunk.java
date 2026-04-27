@@ -6,6 +6,8 @@ public class Trunk extends InteractiveTile {
 
     GamePanel gp;
 
+    public int daysOld = 0;
+
     public Trunk(GamePanel gp, int col, int row) {
         super(gp, col, row);
         this.gp = gp;
@@ -16,11 +18,13 @@ public class Trunk extends InteractiveTile {
                 setupImage(
                         "/tiles_interactive/trunk", this.gp.getTileSize(), this.gp.getTileSize());
 
+        this.collision = false;
+
         // Define a smaller, more realistic solid area (centered bottom)
-        this.solidArea.x = 8;
-        this.solidArea.y = 16;
-        this.solidArea.width = 32;
-        this.solidArea.height = 32;
+        this.solidArea.x = 0;
+        this.solidArea.y = 0;
+        this.solidArea.width = 0;
+        this.solidArea.height = 0;
         this.solidAreaDefaultX = this.solidArea.x;
         this.solidAreaDefaultY = this.solidArea.y;
     }

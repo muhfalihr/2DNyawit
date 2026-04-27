@@ -304,6 +304,36 @@ public class FarmSystem {
         if (incrementDay) {
             gameState.incrementDay();
         }
+
+        // --- Trunk Decay to Soil Logic ---
+        com.uph_lpjk.sawit2d.interactive.tile.InteractiveTile[] iTiles = gp.getInteractiveTile();
+        for (int i = 0; i < iTiles.length; i++) {
+            if (iTiles[i] instanceof com.uph_lpjk.sawit2d.interactive.tile.Trunk) {
+                com.uph_lpjk.sawit2d.interactive.tile.Trunk trunk =
+                        (com.uph_lpjk.sawit2d.interactive.tile.Trunk) iTiles[i];
+                trunk.daysOld++;
+                if (trunk.daysOld >= 1) {
+                    // Remove trunk and make plot plantable
+                    int col = trunk.getWorldX() / gp.getTileSize();
+                    int row = trunk.getWorldY() / gp.getTileSize();
+                    int farmCol = col - FARM_ORIGIN_COL;
+                    int farmRow = row - FARM_ORIGIN_ROW;
+
+                    if (farmCol >= 0
+                            && farmCol < FARM_COLS
+                            && farmRow >= 0
+                            && farmRow < FARM_ROWS) {
+                        FarmTile tile = farmGrid.getTile(farmRow, farmCol);
+                        if (tile != null) {
+                            tile.reset();
+                        }
+                    }
+                    gp.setInteractiveTile(i, null);
+                }
+            }
+        }
+        // ---------------------------------
+
         farmGrid.advanceDay();
         advanceUnusedLandDays();
         updateLandSeizureCounter();
