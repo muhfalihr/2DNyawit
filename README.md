@@ -69,10 +69,93 @@ Kami sangat terbuka bagi siapa saja yang ingin membantu mengembangkan **Sawit2D*
 - **Audio:** Penambahan efek suara (langkah kaki, suara alam) dan musik latar.
 
 ### 3. Standar Kode
+- Kode mengikuti standar **[Google Java Format](https://github.com/google/google-java-format)**.
+- Jalankan perintah berikut sebelum melakukan commit untuk merapikan kode:
+  ```bash
+  mvn fmt:format
+  ```
 - Pastikan kode mengikuti konvensi penamaan Java (CamelCase).
 - Tambahkan komentar pada metode atau logika yang kompleks.
 - Perbarui unit test jika Anda melakukan perubahan pada logika inti.
 
 ---
 
-Dikembangkan dengan ❤️ oleh tim **UPH LPJK**.
+## 👥 Tim Pengembangan
+
+**Sawit2D** dikembangkan oleh tim kolaboratif dengan pembagian peran yang terstruktur untuk memastikan kualitas dan skalabilitas proyek.
+
+### 🎯 Project Management
+
+* **DMS (Dimas)** — *Project Manager*
+
+  * Menentukan roadmap & milestone proyek
+  * Mengatur timeline dan distribusi tugas
+  * Koordinasi antar tim (dev, asset, design)
+  * Review progres & quality control
+
+---
+
+### 💻 Game Development
+
+#### 🧠 Core System & Architecture
+
+* **eunza (Yusep)** — *Lead Game Developer*
+
+  * Perancangan arsitektur game (MVC / modular structure)
+  * Implementasi game loop & state management
+  * Integrasi antar sistem (entity, tile, object)
+  * Optimasi performa rendering & logic
+
+#### 🎮 Gameplay & Mechanics
+
+* **mffr (Falih)** — *Gameplay Developer*
+
+   * Creating Base Project / Boilerplate
+  * Implementasi sistem movement (WASD)
+  * Collision detection & physics sederhana
+  * Sistem interaksi (cut tree, collect item)
+  * Future: inventory, crafting, quest system
+
+---
+
+### 🌍 World & Level Design
+
+* **mffr (Falih)** — *Map Designer*
+* **Sya (Sasha)** — *Level Designer*
+
+  * Desain layout map (tile-based 50x50+)
+  * Penempatan object (tree, water, path)
+  * Balancing eksplorasi & navigasi player
+  * Pembuatan file map (TXT / data-driven)
+
+---
+
+### 🎨 Art & Asset
+
+#### 🧩 Visual Asset Creation
+
+* **Nay (Hanaya)** — *Lead Artist*
+* **Sya (Sasha)** — *2D Artist*
+
+  * Pembuatan sprite karakter
+  * Desain tile set
+  * Object asset
+  * UI element (icon, HUD - future)
+
+#### ✨ Animation (Future Scope)
+
+* Idle, walking, interaction animation
+
+---
+
+### 📖 Narrative & Game Design
+
+* **Nay (Hanaya)** — *Game Designer / Story Writer*
+
+  * Konsep dunia “Nyawit”
+  * Storyline & lore sederhana
+  * Desain quest & objective
+  * Player progression & reward system
+
+---
+Dikembangkan dengan ❤️ oleh tim **UPH LPJK & Team 2**.

@@ -1,62 +1,37 @@
 package com.uph_lpjk.sawit2d.utility;
 
-import javax.imageio.ImageIO;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+
+import javax.imageio.ImageIO;
 
 public class AssetLoader {
 
     private final UtilityTools utilityTools = new UtilityTools();
 
-    public BufferedImage loadImage(int width, int height, String... candidates) {
-        for (String candidate : candidates) {
-            BufferedImage image = loadRawImage(candidate);
-            if (image != null) {
-                return utilityTools.scaledImage(image, width, height);
-            }
-        }
-        return createPlaceholder(width, height);
-    }
-
-    private BufferedImage loadRawImage(String candidate) {
-        if (candidate == null || candidate.isBlank()) {
-            return null;
+    public BufferedImage loadImage(int width, int height, String imagePath) {
+        if (imagePath == null || imagePath.isBlank()) {
+            return createPlaceholder(width, height);
         }
 
-        String resourcePath = candidate.startsWith("/") ? candidate : "/" + candidate;
+        // Ensure the path ends with .png
+        String fullPath = imagePath.endsWith(".png") ? imagePath : imagePath + ".png";
+
+        // Ensure the path starts with /
+        String resourcePath = fullPath.startsWith("/") ? fullPath : "/" + fullPath;
+
         try (InputStream inputStream = getClass().getResourceAsStream(resourcePath)) {
             if (inputStream != null) {
-                return ImageIO.read(inputStream);
+                BufferedImage image = ImageIO.read(inputStream);
+                return utilityTools.scaledImage(image, width, height);
             }
         } catch (IOException ignored) {
         }
 
-        Path filePath = Paths.get(candidate);
-        if (!Files.exists(filePath) && candidate.startsWith("/")) {
-            filePath = Paths.get(candidate.substring(1));
-        }
-        if (!Files.exists(filePath)) {
-            filePath = Paths.get("..", candidate);
-        }
-        if (!Files.exists(filePath) && candidate.startsWith("/")) {
-            filePath = Paths.get("..", candidate.substring(1));
-        }
-
-        if (Files.exists(filePath)) {
-            try {
-                return ImageIO.read(filePath.toFile());
-            } catch (IOException ignored) {
-            }
-        }
-
-        return null;
+        return createPlaceholder(width, height);
     }
 
     private BufferedImage createPlaceholder(int width, int height) {

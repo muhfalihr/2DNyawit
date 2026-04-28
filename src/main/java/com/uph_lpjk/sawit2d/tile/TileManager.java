@@ -1,19 +1,20 @@
 package com.uph_lpjk.sawit2d.tile;
 
+import com.uph_lpjk.sawit2d.controller.GamePanel;
+import com.uph_lpjk.sawit2d.utility.AssetLoader;
+
 import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
-import com.uph_lpjk.sawit2d.controller.GamePanel;
-import com.uph_lpjk.sawit2d.utility.AssetLoader;
-
 public class TileManager {
-    
-    final private GamePanel gp;
-    final private int tileSize;
-    final private int maxWorldCol;
-    final private int maxWorldRow;
+
+    private final GamePanel gp;
+    private final int tileSize;
+    private final int maxWorldCol;
+    private final int maxWorldRow;
 
     protected Tile[] tile;
     protected int mapTileNum[][];
@@ -38,10 +39,17 @@ public class TileManager {
         return this.mapTileNum[col][row];
     }
 
+    public BufferedImage getTileImage(int index) {
+        if (index < 0 || index >= this.tile.length || this.tile[index] == null) {
+            return null;
+        }
+        return this.tile[index].image;
+    }
+
     public boolean getTileCollision(int i) {
         return this.tile[i].collision;
     }
-    
+
     private void getTileImage() {
         setup(0, "tile", "grass00", false);
         setup(1, "tile", "grass00", false);
@@ -88,19 +96,28 @@ public class TileManager {
         setup(42, "tile", "hut", false);
         setup(43, "tile", "floor01", false);
         setup(44, "tile", "table01", true);
-    }
 
-    private void setup(int index, String imageName, boolean collision) {
-        setup(index, "tile", imageName, collision);
+        // FARM SPECIFIC TILES
+        setup(45, "/tile/earth", false);
+        setup(46, "/sawit/sawit-fase-1", false);
+        setup(47, "/sawit/sawit-fase-2", false);
+        setup(48, "/sawit/sawit-panen", false);
+        setup(49, "/tile/kebakaran", false);
+        setup(50, "/fire/api-1", false);
+        setup(51, "/fire/api-3", false);
+        setup(52, "/fire/api-5", false);
+        setup(53, "/tile/after-banjir", false);
+        setup(54, "/tile/kebakaran-2", false);
     }
 
     private void setup(int index, String folder, String imageName, boolean collision) {
-        setupCustom(index, collision, "/" + folder + "/" + imageName + ".png", folder + "/" + imageName + ".png", "../" + folder + "/" + imageName + ".png");
+        setup(index, "/" + folder + "/" + imageName, collision);
     }
 
-    private void setupCustom(int index, boolean collision, String... candidates) {
+    private void setup(int index, String imagePath, boolean collision) {
         this.tile[index] = new Tile();
-        this.tile[index].image = this.assetLoader.loadImage(this.tileSize, this.tileSize, candidates);
+        this.tile[index].image =
+                this.assetLoader.loadImage(this.tileSize, this.tileSize, imagePath);
         this.tile[index].collision = collision;
     }
 
@@ -112,13 +129,13 @@ public class TileManager {
             int col = 0;
             int row = 0;
 
-            while(row < this.maxWorldRow) {
+            while (row < this.maxWorldRow) {
                 String line = bufferedReader.readLine();
                 if (line == null) break;
 
                 String numbers[] = line.split(" ");
                 col = 0;
-                while(col < this.maxWorldCol && col < numbers.length) {
+                while (col < this.maxWorldCol && col < numbers.length) {
                     int num = Integer.parseInt(numbers[col]);
                     this.mapTileNum[col][row] = num;
                     col++;
@@ -141,7 +158,7 @@ public class TileManager {
         int screenWidth = gp.getScreenWidth();
         int screenHeight = gp.getScreenHeight();
 
-        while(worldCol < this.maxWorldCol && worldRow < this.maxWorldRow) {
+        while (worldCol < this.maxWorldCol && worldRow < this.maxWorldRow) {
             int tileNum = this.mapTileNum[worldCol][worldRow];
 
             int worldX = worldCol * this.tileSize;
@@ -150,17 +167,15 @@ public class TileManager {
             int screenX = worldX - cameraX;
             int screenY = worldY - cameraY;
 
-            if(
-                worldX + this.tileSize > cameraX &&
-                worldX - this.tileSize < cameraX + screenWidth &&
-                worldY + this.tileSize > cameraY &&
-                worldY - this.tileSize < cameraY + screenHeight
-            ) {
+            if (worldX + this.tileSize > cameraX
+                    && worldX - this.tileSize < cameraX + screenWidth
+                    && worldY + this.tileSize > cameraY
+                    && worldY - this.tileSize < cameraY + screenHeight) {
                 g2.drawImage(this.tile[tileNum].image, screenX, screenY, null);
             }
             worldCol++;
 
-            if(worldCol == this.maxWorldCol) {
+            if (worldCol == this.maxWorldCol) {
                 worldCol = 0;
                 worldRow++;
             }
@@ -182,12 +197,10 @@ public class TileManager {
 
                 int worldX = col * this.tileSize;
                 int worldY = row * this.tileSize;
-                if (
-                    worldX + this.tileSize < cameraX ||
-                    worldX - this.tileSize > cameraX + screenWidth ||
-                    worldY + this.tileSize < cameraY ||
-                    worldY - this.tileSize > cameraY + screenHeight
-                ) {
+                if (worldX + this.tileSize < cameraX
+                        || worldX - this.tileSize > cameraX + screenWidth
+                        || worldY + this.tileSize < cameraY
+                        || worldY - this.tileSize > cameraY + screenHeight) {
                     continue;
                 }
 
